@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUIWA | 粋をする、生き方を、デザインする村。</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        .font-serif {
+            font-family: 'Noto Serif JP', serif;
+        }
+        /* テキストの折り返しバランスを調整するクラス */
+        .text-balance {
+            text-wrap: balance;
+        }
+        /* 文節で改行を防ぐためのクラス */
+        .ib {
+            display: inline-block;
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 1s ease-out forwards;
+        }
+        .animate-fade-in-down {
+            animation: fadeInDown 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Slide transitions */
+        .slide-image {
+            transition: opacity 2s ease-in-out;
+        }
+        .opacity-0 { opacity: 0; }
+        .opacity-100 { opacity: 1; }
+
+        /* Smartphone Mockup CSS */
+        .smartphone-mockup {
+            position: relative;
+            width: 280px;
+            height: 560px;
+            background: #fff;
+            border-radius: 36px;
+            border: 8px solid #f1f5f9; /* Slate-100 frame */
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15);
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        .smartphone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 24px;
+            background: #f1f5f9;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-white text-slate-800 selection:bg-emerald-800 selection:text-white">
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 border-b border-transparent py-6 text-white">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer group" onclick="navigateTo('home')">
+                <div id="nav-logo-bg" class="w-10 h-10 rounded-full border border-white bg-white/10 text-white flex items-center justify-center transition-colors">
+                    <span class="font-serif font-bold text-lg">S</span>
+                </div>
+                <div>
+                    <div class="text-xl font-serif font-bold tracking-widest leading-none">SUIWA</div>
+                    <div class="text-[10px] tracking-widest uppercase opacity-80">Mino Miwa</div>
+                </div>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex space-x-10 text-xs font-bold tracking-widest uppercase" id="desktop-menu">
+                <button onclick="navigateTo('vision')" class="nav-link hover:text-emerald-500 transition-colors relative group" data-page="vision">
+                    Vision
+                    <span class="absolute -bottom-2 left-0 h-0.5 bg-emerald-500 transition-all w-0 group-hover:w-full"></span>
+                </button>
+                <button onclick="navigateTo('facilities')" class="nav-link hover:text-emerald-500 transition-colors relative group" data-page="facilities">
+                    Facilities
+                    <span class="absolute -bottom-2 left-0 h-0.5 bg-emerald-500 transition-all w-0 group-hover:w-full"></span>
+                </button>
+                <button onclick="navigateTo('app_system')" class="nav-link hover:text-emerald-500 transition-colors relative group" data-page="app_system">
+                    App / OS
+                    <span class="absolute -bottom-2 left-0 h-0.5 bg-emerald-500 transition-all w-0 group-hover:w-full"></span>
+                </button>
+                <button onclick="navigateTo('membership')" class="nav-link hover:text-emerald-500 transition-colors relative group" data-page="membership">
+                    Membership
+                    <span class="absolute -bottom-2 left-0 h-0.5 bg-emerald-500 transition-all w-0 group-hover:w-full"></span>
+                </button>
+                <button onclick="navigateTo('corporate')" class="nav-link hover:text-emerald-500 transition-colors relative group" data-page="corporate">
+                    Business
+                    <span class="absolute -bottom-2 left-0 h-0.5 bg-emerald-500 transition-all w-0 group-hover:w-full"></span>
+                </button>
+            </div>
+            
+            <div class="hidden md:block">
+                <button id="reserve-btn" class="px-6 py-2 rounded-full text-xs font-bold tracking-widest transition-all bg-white/20 backdrop-blur-sm text-white border border-white/40 hover:bg-white hover:text-slate-900">
+                    RESERVE
+                </button>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden" onclick="toggleMenu()">
+                <i data-lucide="menu" id="menu-icon" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl shadow-lg py-8 px-6 flex flex-col space-y-6 md:hidden text-slate-900 animate-fade-in-down border-t border-slate-100 h-screen">
+            <button onclick="navigateTo('vision')" class="text-left text-lg font-serif">Vision</button>
+            <button onclick="navigateTo('facilities')" class="text-left text-lg font-serif">Facilities</button>
+            <button onclick="navigateTo('app_system')" class="text-left text-lg font-serif text-emerald-600">App System</button>
+            <button onclick="navigateTo('membership')" class="text-left text-lg font-serif">Membership</button>
+            <button onclick="navigateTo('corporate')" class="text-left text-lg font-serif">For Business</button>
+            <button class="text-left text-lg font-serif text-emerald-600">Reserve / Login</button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main id="main-content">
+        <!-- Content will be injected here via JavaScript -->
+    </main>
+
+    <!-- Shared Footer -->
+    <footer class="bg-white border-t border-slate-100 text-slate-500 py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-2 mb-6">
+                        <div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-serif font-bold">S</div>
+                        <span class="text-2xl font-serif text-slate-900 tracking-widest">SUIWA</span>
+                    </div>
+                    <p class="leading-relaxed mb-8 text-sm font-light">
+                        <span class="ib">SUIWA（翠和） | </span><span class="ib">Mino Miwa Re-Definition Project</span><br/>
+                        <span class="ib">都市と自然の境界を溶かし、</span><br/>
+                        <span class="ib">100年後の日本の原風景を</span><span class="ib">「編集」する。</span>
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-slate-900 font-bold mb-6 tracking-widest text-xs uppercase">Sitemap</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li><button onclick="navigateTo('vision')" class="hover:text-emerald-600 transition-colors">Vision</button></li>
+                        <li><button onclick="navigateTo('facilities')" class="hover:text-emerald-600 transition-colors">Facilities</button></li>
+                        <li><button onclick="navigateTo('app_system')" class="hover:text-emerald-600 transition-colors">App System</button></li>
+                        <li><button onclick="navigateTo('membership')" class="hover:text-emerald-600 transition-colors">Membership</button></li>
+                        <li><button onclick="navigateTo('corporate')" class="hover:text-emerald-600 transition-colors">Corporate Plan</button></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-slate-900 font-bold mb-6 tracking-widest text-xs uppercase">Contact</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="map-pin" class="text-emerald-500 mt-0.5 w-4 h-4"></i> 
+                            <span>岐阜県美濃加茂市三和町</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="mail" class="text-emerald-500 w-4 h-4"></i> 
+                            <span>contact@life-remix.jp</span>
+                        </li>
+                        <li class="mt-4 pt-4 border-t border-slate-100">
+                            <div class="text-xs text-slate-400 mb-1">Operated by</div>
+                            <div class="font-bold text-slate-900">株式会社LIFE REMIX</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-400">
+                <div>&copy; 2026 LIFE REMIX Inc. All Rights Reserved.</div>
+                <div class="mt-4 md:mt-0 space-x-6">
+                    <a href="#" class="hover:text-emerald-600 transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-emerald-600 transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Templates for Pages -->
+    <template id="page-home">
+        <header class="relative h-screen flex items-center justify-center overflow-hidden">
+            <div id="hero-slider" class="absolute inset-0">
+                <!-- Images injected by JS -->
+            </div>
+
+            <div class="relative z-10 text-center text-white px-4 max-w-5xl mx-auto mt-12 animate-fade-in-up">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-12">
+                    <i data-lucide="wind" class="text-emerald-300 w-3.5 h-3.5"></i>
+                    <span class="text-xs tracking-widest uppercase">The Breathing Village</span>
+                </div>
+                
+                <h1 class="text-4xl md:text-6xl lg:text-8xl font-serif font-medium leading-tight tracking-wide drop-shadow-lg mb-12">
+                    <span class="ib">粋をする、</span><br/>
+                    <span class="ib">生き方を、</span><br/>
+                    <span class="ib">デザインする村。</span>
+                </h1>
+                
+                <p class="text-sm md:text-base font-light text-slate-200 mb-12 max-w-xl mx-auto leading-relaxed hidden md:block tracking-wider">
+                    <span class="ib">澄んだ空気、</span><span class="ib">清らかな水、</span><span class="ib">満天の星。</span><br/>
+                    <span class="ib">都市のノイズを脱ぎ捨て、</span><span class="ib">本来の感覚を取り戻す。</span><br/>
+                    <span class="ib">美濃・三和で始まる、</span><span class="ib">新しい人生のリミックス。</span>
+                </p>
+
+                <div class="flex flex-col md:flex-row justify-center gap-4">
+                    <button onclick="navigateTo('vision')" class="bg-white text-slate-900 px-10 py-4 rounded-full font-bold hover:bg-emerald-50 transition-all duration-300 flex items-center justify-center gap-2 group min-w-[200px] shadow-lg shadow-white/10">
+                        Read Story <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                    <button onclick="navigateTo('facilities')" class="border border-white/50 bg-white/5 backdrop-blur-sm px-10 py-4 rounded-full font-bold text-white hover:bg-white/10 transition-all duration-300 min-w-[200px]">
+                        View Area
+                    </button>
+                </div>
+            </div>
+            
+            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce text-white/70">
+                <span class="text-[10px] tracking-widest uppercase">Scroll</span>
+                <div class="w-px h-12 bg-gradient-to-b from-white to-transparent"></div>
+            </div>
+        </header>
+    </template>
+
+    <template id="page-vision">
+        <div class="pt-32 pb-20 px-6 max-w-5xl mx-auto animate-fade-in">
+            <div class="text-center mb-16">
+                <h2 class="text-emerald-600 font-bold tracking-[0.2em] text-sm uppercase mb-3">Vision & Mission</h2>
+                <h3 class="text-4xl md:text-5xl font-serif text-slate-800">生き方の再定義</h3>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-16 items-center mb-20">
+                <div class="space-y-6 text-slate-600 leading-loose font-light">
+                    <p class="text-lg text-slate-800 font-medium">
+                        <span class="ib">都市の速度から、</span><span class="ib">自然の脈動へ。</span>
+                    </p>
+                    <p class="text-balance">
+                        現代の都市生活は、高度な利便性と引き換えに「自然との断絶」と「過剰な情報」による精神的疲弊を招いています。
+                        私たちは、美濃加茂市三和町（みわちょう）の静寂な里山を「キャンパス」と見立て、都市部の人々が「働きながら、本来の自分を取り戻す」場を提供します。
+                    </p>
+                    <p class="text-balance">
+                        限界集落化が進む地域の空き家を、現実的な投資で取得・改装し、高付加価値なサービスへと昇華させる。
+                        これは単なる不動産開発ではなく、関係人口を創出し、アプリ内通貨やふるさと納税を通じて地域にお金を循環させる「里山資本主義」の社会実装です。
+                    </p>
+                </div>
+                <div class="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/5]">
+                    <img src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=2074&auto=format&fit=crop" alt="Forest Sunlight" class="w-full h-full object-cover" />
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-10 rounded-xl border border-slate-100">
+                <h4 class="text-2xl font-serif text-slate-800 mb-6 text-center">数字で見るプロジェクト</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                    <div class="pt-4 md:pt-0">
+                        <div class="text-4xl font-serif text-emerald-600 mb-2">60<span class="text-lg text-slate-500">min</span></div>
+                        <div class="text-xs text-slate-400 font-bold tracking-widest uppercase">Access from City</div>
+                        <p class="text-sm text-slate-500 mt-2 ib">名古屋から車で約1時間の非日常</p>
+                    </div>
+                    <div class="pt-4 md:pt-0">
+                        <div class="text-4xl font-serif text-emerald-600 mb-2">100<span class="text-lg text-slate-500">%</span></div>
+                        <div class="text-xs text-slate-400 font-bold tracking-widest uppercase">Off-Grid Feeling</div>
+                        <p class="text-sm text-slate-500 mt-2 ib">自然との完全な調和</p>
+                    </div>
+                    <div class="pt-4 md:pt-0">
+                        <div class="text-4xl font-serif text-emerald-600 mb-2">∞</div>
+                        <div class="text-xs text-slate-400 font-bold tracking-widest uppercase">Possibility</div>
+                        <p class="text-sm text-slate-500 mt-2 ib">無限の創造性と人間性</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="page-facilities">
+        <div class="pt-32 pb-20 px-6 max-w-7xl mx-auto animate-fade-in">
+            <div class="text-center mb-16">
+                <h2 class="text-emerald-600 font-bold tracking-[0.2em] text-sm uppercase mb-3">Facilities</h2>
+                <h3 class="text-4xl md:text-5xl font-serif text-slate-800">職・住・遊の融合</h3>
+            </div>
+
+            <!-- Miyara Base -->
+            <div class="flex flex-col lg:flex-row gap-12 mb-32 items-center">
+                <div class="lg:w-1/2">
+                    <div class="relative h-[450px] rounded-xl overflow-hidden shadow-xl group">
+                        <div id="miyara-slider" class="absolute inset-0">
+                            <!-- Images injected by JS -->
+                        </div>
+                        <div class="absolute bottom-6 left-6 bg-white/90 backdrop-blur px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 z-10">
+                            <i data-lucide="wifi" class="w-4 h-4"></i> 翠和・MIYARA-BASE
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 space-y-6">
+                    <h3 class="text-3xl font-serif text-slate-800">
+                        <span class="ib">歴史を支える大梁の下、</span><br class="hidden md:block"/><span class="ib">未来を思考する。</span>
+                    </h3>
+                    <p class="text-slate-500 leading-relaxed text-balance">
+                        築数十年の広壮な古民家（旧宮良邸）をフルリノベーション。
+                        天井を見上げれば、時代を超えて建物を支え続ける黒光りする立派な大梁が、圧倒的な存在感を放ちます。
+                        テラスから広がる開放的な景色と、北欧家具の機能美が調和した空間で、かつてない集中体験を。
+                    </p>
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                        <h4 class="font-bold text-slate-800 mb-4 text-sm tracking-widest uppercase">Facility Specs</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <ul class="space-y-3 text-sm text-slate-600">
+                                <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-3.5 h-3.5"></i> <b>広々とした和空間</b></li>
+                                <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-3.5 h-3.5"></i> 高速Wi-Fi (NURO光)</li>
+                                <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-3.5 h-3.5"></i> 防音WEB会議ブース</li>
+                            </ul>
+                            <ul class="space-y-3 text-sm text-slate-600">
+                                <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-3.5 h-3.5"></i> 4K外部モニター貸出</li>
+                                <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-3.5 h-3.5"></i> <b>インフィニティ・テラス</b></li>
+                                <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-3.5 h-3.5"></i> フリードリンク完備</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Camping -->
+            <div class="flex flex-col lg:flex-row-reverse gap-12 mb-32 items-center">
+                <div class="lg:w-1/2">
+                    <div class="relative h-[450px] rounded-xl overflow-hidden shadow-xl group">
+                        <div id="camp-slider" class="absolute inset-0">
+                            <!-- Images injected by JS -->
+                        </div>
+                        <div class="absolute bottom-6 right-6 bg-white/90 backdrop-blur px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 z-10">
+                            <i data-lucide="tent" class="w-4 h-4"></i> 蛍の小川・オートキャンプ
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 space-y-6">
+                    <h3 class="text-3xl font-serif text-slate-800">
+                        <span class="ib">五感を研ぎ澄ます</span><br class="hidden md:block"/><span class="ib">プレミアム・アウトドア</span>
+                    </h3>
+                    <p class="text-slate-500 leading-relaxed text-balance">
+                        敷地を流れる清流には夏、蛍が舞います。
+                        「外はワイルド、中はホテル」を追求したプレミアムキャビンも併設。
+                        焚き火の音だけが響く夜をお過ごしください。
+                    </p>
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                        <h4 class="font-bold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="droplets" class="text-blue-400 w-4.5 h-4.5"></i> バレルサウナ</h4>
+                        <p class="text-sm text-slate-500">
+                            本場エストニア製のバレルサウナを設置。薪ストーブの柔らかい熱と、天然の川の水風呂で究極の「ととのい」体験を。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pet -->
+            <div class="flex flex-col lg:flex-row gap-12 items-center">
+                <div class="lg:w-1/2">
+                    <div class="relative h-[450px] rounded-xl overflow-hidden shadow-xl group">
+                        <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=2069&auto=format&fit=crop" alt="Dog Run" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <div class="absolute bottom-6 left-6 bg-white/90 backdrop-blur px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
+                            <i data-lucide="dog" class="w-4 h-4"></i> ペット・エクスペリエンス
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 space-y-6">
+                    <h3 class="text-3xl font-serif text-slate-800">
+                        <span class="ib">家族（愛犬）との時間を</span><br class="hidden md:block"/><span class="ib">諦めないワーケーション</span>
+                    </h3>
+                    <p class="text-slate-500 leading-relaxed text-balance">
+                        宿泊・仕事・遊びのすべてを愛犬と共有できる環境。
+                        広大なドッグランを完備し、現地の環境ルールをアプリで事前学習することで、誰もが快適に過ごせます。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="page-app_system">
+        <div class="pt-32 pb-20 px-6 max-w-7xl mx-auto animate-fade-in bg-white">
+            <div class="text-center mb-16">
+                <h2 class="text-emerald-600 font-bold tracking-[0.2em] text-sm uppercase mb-3">SUIWA OS</h2>
+                <h3 class="text-4xl md:text-5xl font-serif text-slate-800">
+                    <span class="ib">自然の中で繋がる、</span><br class="hidden md:block"/><span class="ib">スマートな距離感。</span>
+                </h3>
+                <p class="text-slate-500 mt-6 max-w-2xl mx-auto font-light leading-relaxed text-balance">
+                    セキュリティの強固な専用Webアプリケーションが、あなたの滞在を快適かつ安全にサポートします。
+                    「一人で集中したい」も「誰かと繋がりたい」も、あなたの意思でコントロール可能です。
+                </p>
+            </div>
+
+            <!-- Feature 1: Intuitive Map -->
+            <div class="flex flex-col lg:flex-row gap-16 mb-32 items-center">
+                <div class="lg:w-1/2 relative flex justify-center">
+                    <!-- Decor -->
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-emerald-100 rounded-full blur-3xl opacity-50 -z-10"></div>
+                    
+                    <!-- Smartphone Frame Mockup -->
+                    <div class="smartphone-mockup">
+                        <div class="smartphone-notch"></div>
+                        <!-- App Content (Map) -->
+                        <div class="w-full h-full bg-slate-50 flex flex-col pt-8">
+                            <!-- App Header -->
+                            <div class="px-6 py-4 flex justify-between items-center border-b border-slate-100 bg-white">
+                                <span class="font-serif font-bold text-slate-800">SUIWA MAP</span>
+                                <i data-lucide="menu" class="w-5 h-5 text-slate-400"></i>
+                            </div>
+                            <!-- Map View -->
+                            <div class="flex-1 relative bg-emerald-50 overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1596706979872-4632db2492f2?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover opacity-20" alt="Map BG">
+                                <!-- Pins -->
+                                <div class="absolute top-1/3 left-1/4 w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center animate-bounce text-emerald-600">
+                                    <i data-lucide="tent" class="w-4 h-4"></i>
+                                </div>
+                                <div class="absolute bottom-1/3 right-1/3 w-8 h-8 bg-slate-800 rounded-full shadow-md flex items-center justify-center text-white border-2 border-white scale-110">
+                                    <i data-lucide="wifi" class="w-4 h-4"></i>
+                                </div>
+                                <!-- Floating Card -->
+                                <div class="absolute bottom-4 left-4 right-4 bg-white p-4 rounded-2xl shadow-lg border border-slate-100">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <h5 class="font-bold text-sm text-slate-800">MIYARA-BASE</h5>
+                                            <p class="text-[10px] text-slate-400">Coworking Space</p>
+                                        </div>
+                                        <span class="bg-emerald-100 text-emerald-600 text-[10px] px-2 py-1 rounded-full font-bold">空席あり</span>
+                                    </div>
+                                    <button class="w-full bg-slate-800 text-white text-xs py-2.5 rounded-lg font-bold">この場所を予約する</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 space-y-8">
+                    <div>
+                        <div class="w-12 h-12 bg-white border border-slate-100 shadow-sm rounded-xl flex items-center justify-center mb-6 text-emerald-600">
+                            <i data-lucide="map" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold text-slate-800 font-serif mb-4">直感的なマップ予約</h4>
+                        <p class="text-slate-500 leading-relaxed text-sm text-balance">
+                            SUIWA村全体のマップから、利用したい施設や座席をタップするだけで空き状況をリアルタイムに確認。
+                            オートキャンプ場やコワーキングスペースの場所を、まるで自然の中を散策するように直感的に選択・予約できます。
+                        </p>
+                    </div>
+                    <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                        <img src="https://images.unsplash.com/photo-1596526131083-e8c633c948d2?q=80&w=1974&auto=format&fit=crop" class="w-full h-40 object-cover rounded-xl mb-4" alt="Using app in nature">
+                        <p class="text-xs text-slate-400 text-center">現地でも、スマートフォン一つでチェックインから決済まで。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 2: Social Radar -->
+            <div class="flex flex-col lg:flex-row-reverse gap-16 mb-32 items-center">
+                <div class="lg:w-1/2 relative flex justify-center">
+                     <!-- Decor -->
+                     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-slate-100 rounded-full blur-3xl opacity-60 -z-10"></div>
+
+                     <div class="smartphone-mockup">
+                        <div class="smartphone-notch"></div>
+                        <div class="w-full h-full bg-white flex flex-col pt-8">
+                            <div class="px-6 py-4 border-b border-slate-50">
+                                <h5 class="text-xs font-bold text-slate-400 tracking-wider">TOMORROW'S NEIGHBORS</h5>
+                                <div class="text-lg font-serif font-bold text-slate-800 mt-1">10/24 (Sat)</div>
+                            </div>
+                            <div class="p-4 space-y-4 bg-slate-50 flex-1">
+                                <!-- Card 1 -->
+                                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                                    <div class="flex items-center gap-3 mb-3">
+                                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                                            <i data-lucide="code" class="w-5 h-5"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-sm text-slate-800">User_K</div>
+                                            <div class="text-[10px] text-slate-400">Engineer / Tokyo</div>
+                                        </div>
+                                        <span class="ml-auto text-[10px] bg-slate-100 text-slate-500 px-2 py-1 rounded border border-slate-200">集中モード</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500 leading-snug">
+                                        古民家の静けさの中でコード書きたいです。休憩中はコーヒー飲みながら話せます☕️
+                                    </p>
+                                </div>
+                                <!-- Card 2 -->
+                                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                                    <div class="flex items-center gap-3 mb-3">
+                                        <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
+                                            <i data-lucide="palette" class="w-5 h-5"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-sm text-slate-800">Design_Y</div>
+                                            <div class="text-[10px] text-slate-400">Designer / Nagoya</div>
+                                        </div>
+                                        <span class="ml-auto text-[10px] bg-emerald-100 text-emerald-600 px-2 py-1 rounded border border-emerald-200">交流OK</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500 leading-snug">
+                                        焚き火を囲んでデザインの話ができれば。夜はキャンプエリアにいます🔥
+                                    </p>
+                                </div>
+                                <div class="text-center mt-4">
+                                    <span class="text-[10px] text-slate-400 flex items-center justify-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Privacy Protected</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 space-y-8">
+                    <div>
+                        <div class="w-12 h-12 bg-white border border-slate-100 shadow-sm rounded-xl flex items-center justify-center mb-6 text-emerald-600">
+                            <i data-lucide="users" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold text-slate-800 font-serif mb-4">
+                            <span class="ib">「隣はどんな人？」が</span><br class="hidden md:block"/><span class="ib">事前にわかる安心感。</span>
+                        </h4>
+                        <p class="text-slate-500 leading-relaxed text-sm text-balance">
+                            予約した日の前日になると、あなたの隣接エリアを利用するユーザーの情報がアプリ上で可視化されます。
+                            ただし、公開されるのは「アイコン」と「プロフィール」のみ。個人情報は厳重に守られます。
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                            <i data-lucide="smile" class="text-emerald-500 w-6 h-6 mb-3"></i>
+                            <h5 class="font-bold text-sm text-slate-800 mb-2">過ごし方タグ</h5>
+                            <p class="text-xs text-slate-500 leading-relaxed text-balance">
+                                「集中したい」「のんびり」「交流OK」。今の気分をタグで表明し、ミスマッチを防ぎます。
+                            </p>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                            <i data-lucide="shield" class="text-blue-500 w-6 h-6 mb-3"></i>
+                            <h5 class="font-bold text-sm text-slate-800 mb-2">トラブル回避</h5>
+                            <p class="text-xs text-slate-500 leading-relaxed text-balance">
+                                独自のアルゴリズムで、相性が懸念されるユーザー同士の隣接予約を自動的にブロックします。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 3: Creator Matching -->
+            <div class="bg-emerald-50 rounded-3xl p-10 md:p-16 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-3xl opacity-60 translate-x-1/2 -translate-y-1/2"></div>
+                
+                <div class="relative z-10 flex flex-col md:flex-row items-center gap-12">
+                    <div class="md:w-1/2 space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-white rounded-full text-emerald-700 text-xs font-bold shadow-sm">
+                            <i data-lucide="sparkles" class="w-3 h-3"></i> SERENDIPITY
+                        </div>
+                        <h4 class="text-2xl md:text-3xl font-serif text-slate-800">
+                            <span class="ib">オフラインだからこそ生まれる、</span><br class="hidden md:block"/><span class="ib">新しい仕事のカタチ。</span>
+                        </h4>
+                        <p class="text-slate-600 text-sm leading-loose text-balance">
+                            コワーキングスペース（MIYARA-BASE）では、クリエイターや起業家の利用を想定しています。
+                            アプリのプロフィール機能を通じて、同じ空間にいる人のスキルやポートフォリオを知るきっかけに。<br/><br/>
+                            「焚き火を囲んでいたら、いつの間にか新しいプロジェクトが始まっていた」。
+                            そんな偶発的なセレンディピティ（幸運な出会い）を、システムがさりげなく後押しします。
+                        </p>
+                    </div>
+                    <div class="md:w-1/2">
+                        <div class="relative rounded-2xl overflow-hidden shadow-xl border-4 border-white">
+                            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover" alt="Collaboration">
+                            <div class="absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur p-4 flex items-center justify-between">
+                                <div class="text-xs font-bold text-slate-800">Connect & Create</div>
+                                <div class="flex -space-x-2">
+                                    <div class="w-6 h-6 rounded-full bg-slate-300 border-2 border-white"></div>
+                                    <div class="w-6 h-6 rounded-full bg-slate-400 border-2 border-white"></div>
+                                    <div class="w-6 h-6 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-[8px] text-white font-bold">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="page-membership">
+        <!-- Membership Content here (Simplified for brevity, similar structure to React) -->
+        <div class="pt-32 pb-20 px-6 max-w-6xl mx-auto animate-fade-in">
+            <div class="text-center mb-16">
+                <h2 class="text-emerald-600 font-bold tracking-[0.2em] text-sm uppercase mb-3">Membership Plans</h2>
+                <h3 class="text-4xl md:text-5xl font-serif text-slate-800 mb-6">人生にスパイスを与えるサブスクリプション</h3>
+                <p class="text-slate-500">※100pt ＝ 10,000円相当として利用可能</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8 items-stretch mb-20">
+                <!-- Silver -->
+                <div class="bg-white p-8 rounded-xl border border-slate-200 flex flex-col hover:shadow-xl transition-shadow">
+                    <div class="text-slate-400 font-bold tracking-widest text-sm mb-4">SILVER</div>
+                    <div class="mb-6"><span class="text-3xl font-serif font-bold">¥10,000</span><span class="text-xs text-slate-400"> / 月</span></div>
+                    <div class="bg-slate-50 rounded-lg p-3 text-center mb-6 text-sm font-bold text-slate-600">付与ポイント: <span class="text-emerald-600">100 pt</span></div>
+                    <ul class="space-y-4 mb-8 text-sm text-slate-600 flex-1">
+                        <li class="flex items-start gap-2"><i data-lucide="check" class="text-slate-400 mt-0.5 w-4 h-4"></i> ワークスペース利用</li>
+                        <li class="flex items-start gap-2"><i data-lucide="check" class="text-slate-400 mt-0.5 w-4 h-4"></i> カフェ ドロップイン</li>
+                    </ul>
+                    <button class="w-full py-3 border border-slate-300 rounded-full font-bold text-slate-600 hover:bg-slate-50 transition-colors">申し込む</button>
+                </div>
+                <!-- Gold -->
+                <div class="bg-slate-900 text-white p-8 rounded-xl border border-slate-800 flex flex-col shadow-2xl relative transform md:-translate-y-4">
+                    <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-emerald-400 via-emerald-200 to-emerald-400"></div>
+                    <div class="text-emerald-400 font-bold tracking-widest text-sm mb-4">GOLD <span class="bg-emerald-500 text-slate-900 text-[10px] px-2 py-0.5 rounded ml-2">POPULAR</span></div>
+                    <div class="mb-6"><span class="text-4xl font-serif font-bold">¥30,000</span><span class="text-xs text-slate-400"> / 月</span></div>
+                    <div class="bg-emerald-900/50 rounded-lg p-3 text-center mb-6 text-sm font-bold border border-emerald-500/30">付与ポイント: <span class="text-emerald-400">300 pt</span></div>
+                    <ul class="space-y-4 mb-8 text-sm text-slate-300 flex-1">
+                        <li class="flex items-start gap-2"><i data-lucide="check" class="text-emerald-400 mt-0.5 w-4 h-4"></i> 月1〜2回の宿泊が可能</li>
+                        <li class="flex items-start gap-2"><i data-lucide="check" class="text-emerald-400 mt-0.5 w-4 h-4"></i> バレルサウナ利用権</li>
+                    </ul>
+                    <button class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 rounded-full font-bold text-white transition-colors shadow-lg shadow-emerald-700/50">申し込む</button>
+                </div>
+                <!-- Platinum -->
+                <div class="bg-white p-8 rounded-xl border border-slate-200 flex flex-col hover:shadow-xl transition-shadow">
+                    <div class="text-slate-800 font-bold tracking-widest text-sm mb-4">PLATINUM</div>
+                    <div class="mb-6"><span class="text-3xl font-serif font-bold">¥50,000</span><span class="text-xs text-slate-400"> / 月</span></div>
+                    <div class="bg-slate-50 rounded-lg p-3 text-center mb-6 text-sm font-bold text-slate-600">付与ポイント: <span class="text-emerald-600">500 pt</span></div>
+                    <ul class="space-y-4 mb-8 text-sm text-slate-600 flex-1">
+                        <li class="flex items-start gap-2"><i data-lucide="check" class="text-slate-800 mt-0.5 w-4 h-4"></i> 最優先予約権</li>
+                        <li class="flex items-start gap-2"><i data-lucide="check" class="text-slate-800 mt-0.5 w-4 h-4"></i> キャンプ場 貸切利用</li>
+                    </ul>
+                    <button class="w-full py-3 border border-slate-300 rounded-full font-bold text-slate-600 hover:bg-slate-50 transition-colors">申し込む</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="page-corporate">
+        <div class="pt-32 pb-20 px-6 max-w-7xl mx-auto animate-fade-in bg-white">
+            <div class="text-center mb-16">
+                <h2 class="text-emerald-600 font-bold tracking-[0.2em] text-sm uppercase mb-3">For Business</h2>
+                <h3 class="text-4xl md:text-5xl font-serif text-slate-800">
+                    <span class="ib">次世代の福利厚生・</span><span class="ib">人的資本経営</span>
+                </h3>
+                <p class="text-slate-500 mt-4 text-balance">所有しない「別荘」として、企業の成長をサポートします。</p>
+            </div>
+            <!-- Features and Pricing (Simplified) -->
+            <div class="grid lg:grid-cols-2 gap-16 mb-20">
+                <div class="space-y-8">
+                    <h4 class="text-2xl font-bold text-slate-800">なぜ、SUIWA（翠和）なのか？</h4>
+                    <div class="flex gap-4">
+                        <div class="bg-emerald-100 p-3 h-fit rounded-lg text-emerald-700"><i data-lucide="briefcase" class="w-6 h-6"></i></div>
+                        <div><h5 class="font-bold text-lg mb-2">財務・節税メリット</h5><p class="text-slate-500 text-sm text-balance">自社で保養所を所有する場合、数千万円の初期投資と固定資産税がかかりますが、SUIWAなら全額経費化が可能です。</p></div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="bg-emerald-100 p-3 h-fit rounded-lg text-emerald-700"><i data-lucide="user" class="w-6 h-6"></i></div>
+                        <div><h5 class="font-bold text-lg mb-2">採用ブランディング</h5><p class="text-slate-500 text-sm text-balance">「サウナ付き古民家ワーク」という福利厚生は、強力な採用差別化要因となります。</p></div>
+                    </div>
+                </div>
+                <div class="bg-slate-50 rounded-xl p-8 border border-slate-100">
+                    <h4 class="font-bold text-xl mb-6 text-center">Plan Comparison</h4>
+                    <div class="space-y-6">
+                        <div class="bg-white p-6 rounded-xl shadow-sm">
+                            <div class="flex justify-between items-center mb-4"><div class="font-bold text-lg">Standard Corporate</div><div class="text-xl font-serif">¥150,000<span class="text-xs text-slate-400">/mo</span></div></div>
+                            <ul class="text-sm text-slate-600 space-y-2">
+                                <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-3.5 h-3.5"></i> ポイント: 1,500 pt/月</li>
+                                <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-3.5 h-3.5"></i> チーム合宿優先枠</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900 text-white p-6 rounded-xl shadow-lg relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-emerald-500 text-xs px-3 py-1 font-bold rounded-bl-lg">RECOMMENDED</div>
+                            <div class="flex justify-between items-center mb-4"><div class="font-bold text-lg text-emerald-400">Premium Executive</div><div class="text-xl font-serif">¥250,000<span class="text-xs text-slate-400">/mo</span></div></div>
+                            <ul class="text-sm text-slate-300 space-y-2">
+                                <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-400 w-3.5 h-3.5"></i> ポイント: 3,000 pt/月</li>
+                                <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-400 w-3.5 h-3.5"></i> <b>最優先予約権 (Black)</b></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-center">
+                        <button class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-full font-bold flex items-center justify-center gap-2 w-full transition-colors">
+                            <i data-lucide="download" class="w-4 h-4"></i> 資料をダウンロード (PDF)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        // Images Configuration
+        const IMAGES = {
+            hero: [
+                "https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?q=80&w=2068&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=2070&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?q=80&w=2069&auto=format&fit=crop"
+            ],
+            office: [
+                "img/office_1.png",
+                "img/office_2.png"
+            ],
+            camp: [
+                "img/camp_1.png",
+                "img/camp_2.png"
+            ]
+        };
+
+        let currentIntervals = [];
+
+        // Navigation
+        function navigateTo(pageId) {
+            const mainContent = document.getElementById('main-content');
+            const template = document.getElementById(`page-${pageId}`);
+            
+            if (!template) return;
+
+            // Clear existing intervals
+            currentIntervals.forEach(clearInterval);
+            currentIntervals = [];
+
+            // Inject content
+            mainContent.innerHTML = '';
+            mainContent.appendChild(template.content.cloneNode(true));
+
+            // Update Navigation State
+            document.querySelectorAll('.nav-link').forEach(link => {
+                const span = link.querySelector('span');
+                if (link.dataset.page === pageId) {
+                    link.classList.add('text-emerald-500');
+                    span.classList.remove('w-0');
+                    span.classList.add('w-full');
+                } else {
+                    link.classList.remove('text-emerald-500');
+                    span.classList.remove('w-full');
+                    span.classList.add('w-0');
+                }
+            });
+
+            // Handle Navbar Style
+            handleScroll();
+
+            // Initialize Page Specific Logic
+            if (pageId === 'home') initHeroSlider();
+            if (pageId === 'facilities') initFacilitySliders();
+
+            // Re-initialize Icons
+            lucide.createIcons();
+
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Sliders Logic
+        function initHeroSlider() {
+            const container = document.getElementById('hero-slider');
+            if (!container) return;
+
+            let currentIndex = 0;
+            
+            // Create Image Elements
+            IMAGES.hero.forEach((src, index) => {
+                const div = document.createElement('div');
+                div.className = `absolute inset-0 transition-opacity duration-[2000ms] ease-in-out ${index === 0 ? 'opacity-100' : 'opacity-0'}`;
+                div.innerHTML = `
+                    <img src="${src}" alt="Hero" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-b from-slate-900/40 via-slate-900/20 to-emerald-900/30 mix-blend-multiply"></div>
+                `;
+                container.appendChild(div);
+            });
+
+            const interval = setInterval(() => {
+                const slides = container.children;
+                slides[currentIndex].classList.remove('opacity-100');
+                slides[currentIndex].classList.add('opacity-0');
+                
+                currentIndex = (currentIndex + 1) % slides.length;
+                
+                slides[currentIndex].classList.remove('opacity-0');
+                slides[currentIndex].classList.add('opacity-100');
+            }, 6000);
+            
+            currentIntervals.push(interval);
+        }
+
+        function initFacilitySliders() {
+            createSimpleSlider('miyara-slider', IMAGES.office);
+            createSimpleSlider('camp-slider', IMAGES.camp);
+        }
+
+        function createSimpleSlider(elementId, images) {
+            const container = document.getElementById(elementId);
+            if (!container) return;
+
+            let currentIndex = 0;
+
+            images.forEach((src, index) => {
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = "Facility";
+                img.className = `absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${index === 0 ? 'opacity-100' : 'opacity-0'}`;
+                container.appendChild(img);
+            });
+
+            const interval = setInterval(() => {
+                const slides = container.children;
+                slides[currentIndex].classList.remove('opacity-100');
+                slides[currentIndex].classList.add('opacity-0');
+                
+                currentIndex = (currentIndex + 1) % slides.length;
+                
+                slides[currentIndex].classList.remove('opacity-0');
+                slides[currentIndex].classList.add('opacity-100');
+            }, 5000);
+
+            currentIntervals.push(interval);
+        }
+
+        // Scroll Handling
+        function handleScroll() {
+            const navbar = document.getElementById('navbar');
+            const navLogoBg = document.getElementById('nav-logo-bg');
+            const desktopMenu = document.getElementById('desktop-menu');
+            const menuIcon = document.getElementById('menu-icon');
+            const reserveBtn = document.getElementById('reserve-btn');
+            
+            // Check if we are not on home page (simple check: if hero-slider is missing)
+            const isHomePage = document.getElementById('hero-slider') !== null;
+
+            if (window.scrollY > 50 || !isHomePage) {
+                navbar.classList.remove('bg-transparent', 'text-white', 'py-6');
+                navbar.classList.add('bg-white/90', 'backdrop-blur-md', 'text-slate-900', 'py-4', 'shadow-sm');
+                
+                navLogoBg.classList.remove('border-white', 'bg-white/10', 'text-white');
+                navLogoBg.classList.add('border-slate-800', 'bg-slate-900', 'text-white');
+                
+                desktopMenu.classList.remove('text-white');
+                // desktopMenu.classList.add('text-slate-600'); // text color handled by parent
+
+                if(reserveBtn) {
+                    reserveBtn.classList.remove('bg-white/20', 'text-white', 'border-white/40');
+                    reserveBtn.classList.add('bg-slate-900', 'text-white', 'hover:bg-emerald-700');
+                }
+            } else {
+                navbar.classList.add('bg-transparent', 'text-white', 'py-6');
+                navbar.classList.remove('bg-white/90', 'backdrop-blur-md', 'text-slate-900', 'py-4', 'shadow-sm');
+                
+                navLogoBg.classList.add('border-white', 'bg-white/10', 'text-white');
+                navLogoBg.classList.remove('border-slate-800', 'bg-slate-900', 'text-white');
+
+                if(reserveBtn) {
+                    reserveBtn.classList.add('bg-white/20', 'text-white', 'border-white/40');
+                    reserveBtn.classList.remove('bg-slate-900', 'text-white', 'hover:bg-emerald-700');
+                }
+            }
+        }
+
+        // Mobile Menu
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Init
+        window.addEventListener('scroll', handleScroll);
+        document.addEventListener('DOMContentLoaded', () => {
+            navigateTo('home');
+        });
+
+    </script>
+</body>
+</html>
